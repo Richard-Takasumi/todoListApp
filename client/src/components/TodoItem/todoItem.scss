@@ -1,0 +1,43 @@
+.todo-item-container {
+    display: flex;
+    font-size: 1rem;
+    border: 1px solid black;
+    border-radius: 10px;
+    margin: 10px 0px;
+    width: 100%;
+}
+
+.todo-item {
+    width: 90%;
+    margin-left: 5px;
+}
+
+.todo-options {
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 10%;
+    div {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    img {
+        height: 30px;
+    }
+}
+
+.edit-btn {
+    border-top-right-radius: 9px;
+    &:hover {
+        background-color: grey;
+    }
+}
+
+.delete-btn {
+    border-bottom-right-radius: 9px;
+    &:hover {
+        background-color: grey;
+    }
+}
