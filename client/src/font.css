@@ -1,0 +1,5 @@
+@font-face {
+    font-family: 'BalsamiqSansRegular';
+    src: local('BalsamiqSansRegular'),
+         url('./fonts/BalsamiqSans/BalsamiqSans-Regular.ttf') format('ttf'),
+}

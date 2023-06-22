@@ -1,6 +1,7 @@
 import { nanoid } from "nanoid";
 import {React, useState} from 'react'
 import "./todoInputBar.scss"
+import { saveTodo } from "../../api/todoService";
 
 export const TodoInputBar = ({setTodos}) => {
         const [title, setTitle] = useState("")
@@ -8,10 +9,15 @@ export const TodoInputBar = ({setTodos}) => {
     
         const handleSubmit = (e) => {
             e.preventDefault()
+            if (title === "") return
             const id = nanoid()
+            const newTodo = {title: title, description: description, id: id, key: id}
+
+            saveTodo(newTodo)
+
             setTodos((prevTodos) => {
                 return {
-                    "todo": [...prevTodos["todo"], {title: title, description: description, id: id, key: id}],
+                    "todo": [...prevTodos["todo"], newTodo],
                     "inProgress": prevTodos["inProgress"],
                     "archived": prevTodos["archived"]
                 }

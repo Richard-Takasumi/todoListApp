@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useDroppable } from "@dnd-kit/core";
 import {
   SortableContext,
@@ -8,7 +8,7 @@ import { TodoItem } from "../TodoItem/TodoItem";
 import "./todoCategory.scss"
 
 const id_to_name = {
-  "todo": "To do:",
+  "todo": "To do",
   "inProgress": "In progress",
   "archived": "Archived"
 }
@@ -21,14 +21,10 @@ const containerStyle = {
 };
 
 export function TodoCategory(props) {
-  const { id, todos, setTodos } = props;
+  const { id, todos, setTodos, searchTerm, deleteTodo } = props;
   const { setNodeRef } = useDroppable({
     id
   });
-
-  useEffect(() => {
-    console.log(`Todos in ${id}:`, todos);
-  }, []);
 
   return (
     <SortableContext
@@ -38,7 +34,11 @@ export function TodoCategory(props) {
     >
       <div ref={setNodeRef} style={containerStyle}>
           <h1 className='category-title' >{id_to_name[id]}</h1>
-          {todos.map((todo) => <TodoItem todo={todo} key={todo.key} setTodos={setTodos}/>)}
+          {todos.filter((todo) => 
+              todo.title.toLowerCase().includes(searchTerm.toLowerCase())
+           || todo.description.toLowerCase().includes(searchTerm.toLowerCase())
+          ).map((todo) => 
+              <TodoItem deleteTodo={deleteTodo} todo={todo} key={todo.key} setTodos={setTodos} searchTerm={searchTerm}/>)}
       </div>
     </SortableContext>
   );

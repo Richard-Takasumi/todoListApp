@@ -1,6 +1,8 @@
 import {React, useEffect, useState} from 'react'
 import { TodoInputBar } from '../../components/TodoInputBar/TodoInputBar'
 import { TodoCategory } from '../../components/TodoCategory/TodoCategory'
+import { TodoSearchBar } from '../../components/TodoSearchBar/TodoSearchBar'
+import { fetchTodos } from '../../api/todoService'
 import "./todoListPage.scss"
 
 import {
@@ -18,14 +20,28 @@ import { TodoItem } from '../../components/TodoItem/TodoItem';
 export const TodoListPage = () => {
 
     //------------ Todo List ------------
+    // const [todos, setTodos] = useState({
+    //   "todo": [],
+    //   "inProgress": [],
+    //   "archived": []
+    // })
     const [todos, setTodos] = useState({
-      "todo": [{title: "Todo 1", description: "Description 1", key: "1" ,id: "1"}, {title: "Todo 2", description: "Description 2", key: "2" ,id: "2"}],
-      "inProgress": [{title: "Todo 3", description: "Description 3", key: "3" ,id: "3"}, {title: "Todo 4", description: "Description 4", key: "4" ,id: "4"}],
-      "archived": [{title: "Todo 5", description: "Description 5", key: "5" ,id: "5"}, {title: "Todo 6", description: "Description 6", key: "6" ,id: "6"}]
+      "todo": [{title: "Loading...", description: "", key:"1", id: "1"}],
+      "inProgress": [{title: "Loading...", description: "", key:"2", id: "2"}],
+      "archived": [{title: "Loading...", description: "", key:"3", id: "3"}]
     })
 
-    
+    //------------ Filter by search ------------
+    const [searchTerm, setSearchTerm] = useState("") 
 
+    useEffect(() => {
+      const onInit = async () => {
+        const fetchedTodos = await fetchTodos()
+        setTodos(fetchedTodos)
+      }
+      onInit()
+
+    }, [])
 
 
     // For detecting native device input
@@ -49,14 +65,15 @@ export const TodoListPage = () => {
         >
           <div >
             <h1 > Todo List</h1> 
+              <TodoSearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
               <div className="add-todo-bar">
                 <TodoInputBar setTodos={setTodos}/> 
               </div>
               <div className='todo-categories'>
-                <TodoCategory id={"todo"} todos={todos["todo"]} setTodos={setTodos}/>
-                <TodoCategory id={"inProgress"} todos={todos["inProgress"]} setTodos={setTodos}/>
-                <TodoCategory id={"archived"} todos={todos["archived"]} setTodos={setTodos}/>
-                <DragOverlay>{activeTodo ? <TodoItem todo={activeTodo} key={activeTodo.key} setTodos={setTodos} /> : null}</DragOverlay>
+                <TodoCategory id={"todo"} todos={todos["todo"]} setTodos={setTodos} searchTerm={searchTerm}/>
+                <TodoCategory id={"inProgress"} todos={todos["inProgress"]} setTodos={setTodos} searchTerm={searchTerm}/>
+                <TodoCategory id={"archived"} todos={todos["archived"]}  setTodos={setTodos} searchTerm={searchTerm}/>
+                <DragOverlay>{activeTodo ? <TodoItem todo={activeTodo} key={activeTodo.key} setTodos={setTodos} searchTerm={searchTerm}/> : null}</DragOverlay>
               </div>
           </div>
         </DndContext>
@@ -83,6 +100,7 @@ export const TodoListPage = () => {
 
     // this function handles the case where the user drags a todo to another category e.g from todo to inProgress
     function handleDragOver(event) {
+      console.log('handledragover')
       const { active, over } = event;
       const { rect } = over; // rect is the bounding box of the droppable area
       const { id } = active;
@@ -144,8 +162,8 @@ export const TodoListPage = () => {
 
     // this function handles the case where the user re-orders todos in the same category/container
     function handleDragEnd(event) {
+      console.log('handledragend')
       const { active, over } = event;
-      console.log("active", active, "over", over)
       if(!over) {
         return
       }

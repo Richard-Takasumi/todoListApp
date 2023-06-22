@@ -1,0 +1,7 @@
+{
+    "todo": [{"title": "Todo 1", "description": "Description 1","key":"1", "id": "1"}, {"title": "Todo 2", "description": "Description 2","key":"2", "id": "2"}],
+    "inProgress": [{"title": "Todo 3", "description": "Description 3","key":"3", "id": "3"}, {"title": "Todo 4", "description": "Description 4","key":"4", "id": "4"}],
+    "archived": [{"title": "Todo 5", "description": "Description 5", "key":"5", "id": "5"}, {"title": "Todo 6", "description": "Description 6","key":"6", "id": "6"}]
+}
+
+
