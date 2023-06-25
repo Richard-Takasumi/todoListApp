@@ -31,7 +31,7 @@ export const TodoInputBar = ({setTodos}) => {
             <div className="bar-container">
                 <form onSubmit={handleSubmit}>
                     <div className="todo-input">
-                        <input type="text" placeholder="Title: (required)" value={title} onChange={(e) => setTitle(e.target.value)} required/>
+                        <input type="text" placeholder="Title: (required)" value={title} onChange={(e) => setTitle(e.target.value)}/>
                         <input type="text" placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)}/>
                     </div>
                     <button type="submit">Add task</button>

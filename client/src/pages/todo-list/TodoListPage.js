@@ -36,17 +36,18 @@ export const TodoListPage = () => {
 
     useEffect(() => {
       const onInit = async () => {
-        try{
           const fetchedTodos = await fetchTodos()
-          setTodos(fetchedTodos)
-        } catch (err) {
-          setTodos( {
-            "todo": [],
-            "inProgress": [{title: "Could not fetch!", description: "Please ensure your wifi is on", key:"404", id: "404"}],
-            "archived": []
-          })
+          if (fetchedTodos) {
+            setTodos(fetchedTodos)
+          }
+          else {
+            setTodos( {
+              "todo": [],
+              "inProgress": [{title: "Could not fetch!", description: "Please ensure your wifi is on", key:"404", id: "404"}],
+              "archived": []
+            })
+          }
         }
-      }
       onInit()
     }, [])
 

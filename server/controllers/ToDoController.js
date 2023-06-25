@@ -1,8 +1,15 @@
 const ToDoModel = require('../models/ToDoModel');
 
 module.exports.getToDo = async (req, res) => {
-    const todos = await ToDoModel.findOne({}, { _id: false, __v: false });
-    res.send(todos);
+        const todos = await ToDoModel.findOne({}, { _id: false, __v: false })
+        .then((todos) => {
+            res.status(200).json(todos);
+        })
+        .catch((err) => {
+            res.status(500).json({ message: err.message });
+        }
+    );
+    
 }
 
 
