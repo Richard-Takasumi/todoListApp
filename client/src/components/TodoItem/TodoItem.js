@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {useState} from 'react'
@@ -31,6 +31,7 @@ export const TodoItem = (props) => {
     // and the id of the todo is passed in
     function handleEdit(id) {
         setEditing(true)
+
     }        
 
     const handleSubmit = (e) => {
@@ -83,6 +84,12 @@ export const TodoItem = (props) => {
         } </div>;
     }
 
+
+    function handleKeyDown(e) {
+        if (e.key === 'Enter') {
+            handleSubmit(e)
+        }
+    }
     
     return (
         <div ref={setNodeRef} style={style}>
@@ -96,9 +103,17 @@ export const TodoItem = (props) => {
                 {editing && // not draggable while editing
                 <div className="todo-item-editing">
                     <form onSubmit={handleSubmit}>
-                        <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)}/>
-                        <input type="text" placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)}/>
-                        <button type="submit">Submit</button>
+                        <div className='todo-editing-input'>
+                            <input  className='todo-editing-text h1' type="text"  
+                                    autoFocus
+                                    value={title} onChange={(e) => setTitle(e.target.value) }
+                                    onKeyDown={handleKeyDown}
+                            />
+                            <input className='todo-editing-text' type="text"  
+                                    value={description } onChange={(e) => setDescription(e.target.value)}
+                                    onKeyDown={handleKeyDown}
+                            />
+                        </div>
                     </form>
                 </div>
                 }
