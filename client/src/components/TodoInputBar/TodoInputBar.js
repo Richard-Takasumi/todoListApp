@@ -26,13 +26,15 @@ export const TodoInputBar = ({setTodos}) => {
             setTitle("")
             setDescription("")
         }
-    
+        
         return (
             <div className="bar-container">
                 <form onSubmit={handleSubmit}>
-                    <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)}/>
-                    <input type="text" placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)}/>
-                    <button type="submit">Submit</button>
+                    <div className="todo-input">
+                        <input type="text" placeholder="Title: (required)" value={title} onChange={(e) => setTitle(e.target.value)} required/>
+                        <input type="text" placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)}/>
+                    </div>
+                    <button type="submit">Add task</button>
                 </form>
             </div>
         )

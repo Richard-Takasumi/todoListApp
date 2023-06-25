@@ -76,11 +76,11 @@ export const TodoItem = (props) => {
     // thank you github copilot
     function highlight(text, highlight) {
         const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
-        return <span> { parts.map((part, i) =>
+        return <div className='todo-text'> { parts.map((part, i) =>
             <span key={i} style={part.toLowerCase() === highlight.toLowerCase() ? { background: "#FFC107" } : {} }>
-                { part }
+                { part !== " " ? part : "\u00A0"}
             </span>)
-        } </span>;
+        } </div>;
     }
 
     
@@ -89,12 +89,12 @@ export const TodoItem = (props) => {
             <div className="todo-item-container">
                 {!editing && // draggable when not editing
                 <div className="todo-item" {...attributes} {...listeners}>
-                    {!editing && <p>{highlight(todo.title, searchTerm)}</p>}    
-                    {!editing && <p>{highlight(todo.description, searchTerm)}</p>}    
+                    <h1>{!editing && highlight(todo.title, searchTerm)}   </h1>
+                    {!editing && highlight(todo.description, searchTerm)}    
                 </div>
                 }        
                 {editing && // not draggable while editing
-                <div>
+                <div className="todo-item-editing">
                     <form onSubmit={handleSubmit}>
                         <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)}/>
                         <input type="text" placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)}/>
