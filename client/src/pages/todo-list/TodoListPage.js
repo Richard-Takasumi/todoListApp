@@ -37,6 +37,7 @@ export const TodoListPage = () => {
     useEffect(() => {
       const onInit = async () => {
           const fetchedTodos = await fetchTodos()
+          console.log("fetchedTodos", fetchedTodos)
           if (fetchedTodos) {
             setTodos(fetchedTodos)
           }
@@ -84,11 +85,11 @@ export const TodoListPage = () => {
           onDragEnd={handleDragEnd}           // what to do when a draggable item is dropped
         >
           <div >
-            <h1 > Todo List</h1> 
+            <h1 > Todo List</h1>
+              <div className='todo-header'>
               <TodoSearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
-              <div className="add-todo-bar">
-                <TodoInputBar setTodos={setTodos}/> 
-              </div>
+              <TodoInputBar setTodos={setTodos}/> 
+              </div> 
               <div className='todo-categories'>
                 <TodoCategory id={"todo"} todos={todos["todo"]} setTodos={setTodos} searchTerm={searchTerm}/>
                 <TodoCategory id={"inProgress"} todos={todos["inProgress"]} setTodos={setTodos} searchTerm={searchTerm}/>

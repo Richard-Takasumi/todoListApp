@@ -1,14 +1,11 @@
 import axios from 'axios';
 
+const BaseUrl = 'http://localhost:4000';
+
 export async function fetchTodos() {
     try {
-      const res = await fetch('http://localhost:4000/') 
-      console.log('fetching: ', res)
-      if (res.ok) {
-        const fetchedTodos = await res.json()
-        console.log('fetching async: ', fetchedTodos)
-        return fetchedTodos
-      }
+      const res = await axios(BaseUrl + '/')
+      return res.data;
     } catch (error) {
       console.log(error)
       return error;
