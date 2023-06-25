@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BaseUrl = 'https://TodoAppRichard-Api.onrender.com';
+const BaseUrl = 'https://todoapprichard-api.onrender.com';
 
 export async function fetchTodos() {
     try {
@@ -14,7 +14,7 @@ export async function fetchTodos() {
 
 export async function saveTodo(newTodo) {
     try {
-      const response = await axios.post('/save-todo', newTodo);
+      const response = await axios.post(BaseUrl + '/save-todo', newTodo);
       console.log('Todo saved successfully:', response.data);
     } catch (error) {
       console.error('Error saving todo:', error);
@@ -22,7 +22,7 @@ export async function saveTodo(newTodo) {
 }
 export async function updateTodo(todoId, category, newTitle, newDescription) {
     try {
-      const response = await axios.post('/update-todo', {
+      const response = await axios.post(BaseUrl + '/update-todo', {
         todoId: todoId,
         category: category,
         newTitle: newTitle,
@@ -36,7 +36,7 @@ export async function updateTodo(todoId, category, newTitle, newDescription) {
 
 export async function saveCategory(startCategory, endCategory, startCategoryTodos, endCategoryTodos) {
     try {
-      const response = await axios.post('/save-category', {
+      const response = await axios.post(BaseUrl + '/save-category', {
         startCategory: startCategory,
         startCategoryTodos: startCategoryTodos, 
         endCategory: endCategory,
@@ -50,7 +50,7 @@ export async function saveCategory(startCategory, endCategory, startCategoryTodo
 
 export async function deleteTodo(todoId, category) {
   try {
-    const response = await axios.post('/delete-todo', 
+    const response = await axios.post(BaseUrl + '/delete-todo', 
     {
       todoId: todoId,
       category: category
