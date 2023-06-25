@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BaseUrl = 'http://localhost:4000';
+const BaseUrl = 'https://TodoAppRichard-Api.onrender.com';
 
 export async function fetchTodos() {
     try {
