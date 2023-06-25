@@ -15,9 +15,9 @@ module.exports.getToDo = async (req, res) => {
 // send the todo array back to the client
 
 module.exports.saveToDo = async (req, res) => {
-
     const {title, description, key, id} = req.body
     const todo = {title: title, description: description, key: key, id: id}
+    console.log("todo: ", todo)
     ToDoModel.findOne({})
         .then((todoDoc) => {
             if (!todoDoc) {
@@ -34,7 +34,40 @@ module.exports.saveToDo = async (req, res) => {
             return todoDoc.save();
         })
         .then(() => {
-            console.log('New todo added successfully');
+            res.status(200).json({ message: "New todo added successfully." });
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+}
+module.exports.deleteToDo = async (req, res) => {
+    const {todoId, category} = req.body
+    console.log("todo to delete ID: ", todoId)
+    ToDoModel.findOne({})
+        .then((todoDoc) => {
+            // delete the todo in the category
+            todoDoc[category].pull( { id: todoId } )
+            // save the document
+            return todoDoc.save();
+        })
+        .then(() => {
+            res.status(200).json({ message: `Todo with ID, ${todoId}, "deleted successfully.` });
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+}
+
+module.exports.updateToDo = async (req, res) => {
+    const {todoId, category, newTitle, newDescription} = req.body
+    console.log("todo to update ID: ", todoId)
+    ToDoModel.findOneAndUpdate(
+        { [category]: { $elemMatch: { id: todoId } } },
+        { $set: { [`${category}.$[elem].title`]: newTitle, [`${category}.$[elem].description`]: newDescription } },
+        { arrayFilters: [{ 'elem.id': todoId }], new: true }
+      )
+        .then(() => {
+            res.status(200).json({ message: `Todo with ID, ${todoId}, "updated successfully.` });
         })
         .catch((err) => {
             console.error(err);
@@ -43,4 +76,26 @@ module.exports.saveToDo = async (req, res) => {
 
 
 
-// module.exports.saveToDo()
+module.exports.saveCategory = async (req, res, id) => {
+    console.log(req.body)
+    const { startCategory, startCategoryTodos, endCategory, endCategoryTodos } = req.body
+    ToDoModel.findOne({})
+    .then((todoDoc) => {
+        
+        // update where the todo started if it has ended in a different category
+        if (startCategory != endCategory) {
+            todoDoc[startCategory] = startCategoryTodos
+        }
+        todoDoc[endCategory] = endCategoryTodos
+        // save the document
+        return todoDoc.save();
+    })
+    .then(() => {
+        res.status(200).json({ message: "Rearranged todos successfully." });
+    })
+    .catch((err) => {
+        console.error(err);
+        res.status(500).json({ message: "Error rearranging todos inside category." });
+    });
+    
+}

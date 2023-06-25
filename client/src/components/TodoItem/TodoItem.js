@@ -2,6 +2,7 @@ import React from 'react';
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {useState} from 'react'
+import { deleteTodo, updateTodo } from '../../api/todoService';
 import editIcon from '../../assets/edit.png'
 import deleteIcon from '../../assets/cross.png'
 import "./todoItem.scss"
@@ -36,7 +37,10 @@ export const TodoItem = (props) => {
         e.preventDefault()
         setTodos((prev) => {
             const category = Object.keys(prev).find((key) => prev[key].find((item) => item === todo)) 
-            console.log(category)
+
+            if (todo.title != title || todo.description != description) {
+                updateTodo(todo.id, category, title, description) // update in database
+            }
             return {
                 ...prev,
                 [category]: prev[category].map(item => {
@@ -51,6 +55,7 @@ export const TodoItem = (props) => {
                 })
             }
         })
+        
         setEditing(false)
     }
 
@@ -58,11 +63,14 @@ export const TodoItem = (props) => {
         console.log("handle delete", id)
         setTodos(prev => {
             const category = Object.keys(prev).find((key) => prev[key].find((todo) => todo.id === id))
+                // delete in our database
+                deleteTodo(id, category)
             return {
                 ...prev,
                 [category]: prev[category].filter(todo => todo.id !== id)
             }
         })
+
     }
 
     // thank you github copilot

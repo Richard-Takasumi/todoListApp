@@ -2,7 +2,7 @@ import {React, useEffect, useState} from 'react'
 import { TodoInputBar } from '../../components/TodoInputBar/TodoInputBar'
 import { TodoCategory } from '../../components/TodoCategory/TodoCategory'
 import { TodoSearchBar } from '../../components/TodoSearchBar/TodoSearchBar'
-import { fetchTodos } from '../../api/todoService'
+import { fetchTodos, saveCategory } from '../../api/todoService'
 import "./todoListPage.scss"
 
 import {
@@ -36,12 +36,20 @@ export const TodoListPage = () => {
 
     useEffect(() => {
       const onInit = async () => {
-        const fetchedTodos = await fetchTodos()
-        setTodos(fetchedTodos)
+        try{
+          const fetchedTodos = await fetchTodos()
+          setTodos(fetchedTodos)
+        } catch (err) {
+          setTodos( {
+            "todo": [],
+            "inProgress": [{title: "Could not fetch!", description: "Please ensure your wifi is on", key:"404", id: "404"}],
+            "archived": []
+          })
+        }
       }
       onInit()
-
     }, [])
+
 
 
     // For detecting native device input
@@ -52,8 +60,19 @@ export const TodoListPage = () => {
       })
     );
 
-    const [activeTodo, setActiveTodo] = useState(null); // the object of the draggable item that is currently being dragged
-    
+    const [startTodo, setStartTodo] = useState(null); // the object of the draggable item that is currently being dragged
+    const [startCategory, setStartCategory] = useState(null); // the object of the draggable item that is currently being dragged
+    const [endCategory, setEndCategory] = useState(null)
+
+    // this saves the state to our DB everytime a user drops an item.
+    useEffect(() => {
+      if (endCategory != null) {
+        saveCategory(startCategory, endCategory, todos[startCategory], todos[endCategory]) // info we need to update DB
+        setStartTodo(null);
+        setStartCategory(null);
+        setEndCategory(null);
+      }
+    }, [endCategory])
 
     return (
         <DndContext 
@@ -73,7 +92,7 @@ export const TodoListPage = () => {
                 <TodoCategory id={"todo"} todos={todos["todo"]} setTodos={setTodos} searchTerm={searchTerm}/>
                 <TodoCategory id={"inProgress"} todos={todos["inProgress"]} setTodos={setTodos} searchTerm={searchTerm}/>
                 <TodoCategory id={"archived"} todos={todos["archived"]}  setTodos={setTodos} searchTerm={searchTerm}/>
-                <DragOverlay>{activeTodo ? <TodoItem todo={activeTodo} key={activeTodo.key} setTodos={setTodos} searchTerm={searchTerm}/> : null}</DragOverlay>
+                <DragOverlay>{startTodo ? <TodoItem todo={startTodo} key={startTodo.key} setTodos={setTodos} searchTerm={searchTerm}/> : null}</DragOverlay>
               </div>
           </div>
         </DndContext>
@@ -93,16 +112,16 @@ export const TodoListPage = () => {
     function handleDragStart(event) {
       const { active } = event; // grab the active draggable item
       const { id } = active;    // grab the id of the active draggable item
-      const category = findContainer(id); // find the category of the draggable item
-      const activeTodo = todos[category].find((todo) => todo.id === id); // find the draggable item in the category
-      setActiveTodo(activeTodo);
+      const startCategory = findContainer(id); // find the category of the draggable item
+      const startTodo = todos[startCategory].find((todo) => todo.id === id); // find the draggable item in the category
+      setStartCategory(startCategory)
+      setStartTodo(startTodo);
     }
 
     // this function handles the case where the user drags a todo to another category e.g from todo to inProgress
     function handleDragOver(event) {
       console.log('handledragover')
       const { active, over } = event;
-      const { rect } = over; // rect is the bounding box of the droppable area
       const { id } = active;
       const { id: overId } = over;
   
@@ -134,14 +153,8 @@ export const TodoListPage = () => {
           newIndex = overItems.length + 1;
         } else {
           // Math to determine the new index of the item after dropping
-          const isBelowLastItem =
-            over &&
-            overIndex === overItems.length - 1 &&
-            rect.offsetTop > over.rect.offsetTop + over.rect.height; 
-          const modifier = isBelowLastItem ? 1 : 0;
-          newIndex = overIndex >= 0 ? overIndex + modifier : overItems.length + 1;
+          newIndex = overIndex;
         }
-
         return {
           // keep the other containers the same
           ...prev,
@@ -159,10 +172,9 @@ export const TodoListPage = () => {
       });
     }
 
-
     // this function handles the case where the user re-orders todos in the same category/container
+    // it also saves the overContainer to our database.
     function handleDragEnd(event) {
-      console.log('handledragend')
       const { active, over } = event;
       if(!over) {
         return
@@ -194,8 +206,7 @@ export const TodoListPage = () => {
           [overContainer]: arrayMove(todos[overContainer], activeIndex, overIndex)
         }));
       }
-  
-      setActiveTodo(null);
+      setEndCategory(overContainer) // to update our database. 
     }
     // ---------------- End of Drag and Drop Functions ----------------
   

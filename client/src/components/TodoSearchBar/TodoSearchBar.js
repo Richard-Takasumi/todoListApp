@@ -1,11 +1,6 @@
 
-// create a search bar component 
-// react
-
 import React from 'react'
-import {useState} from 'react'
-
-
+import './todoSearchBar.scss'
 
 export const TodoSearchBar = (props) => {
     const {searchTerm, setSearchTerm} = props
@@ -20,10 +15,9 @@ export const TodoSearchBar = (props) => {
         }
     }
     return (
-        <div>
+        <div className='searchbar'>
             <form onSubmit={handleSubmit}>
                 <input type="text" placeholder="Search" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onKeyDown={handleKeyPress} />
-                <button type="submit">Submit</button>
             </form>
         </div>
     )

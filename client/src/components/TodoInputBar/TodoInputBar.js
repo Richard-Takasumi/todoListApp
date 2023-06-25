@@ -1,6 +1,7 @@
 import { nanoid } from "nanoid";
 import {React, useState} from 'react'
 import "./todoInputBar.scss"
+
 import { saveTodo } from "../../api/todoService";
 
 export const TodoInputBar = ({setTodos}) => {
@@ -11,7 +12,7 @@ export const TodoInputBar = ({setTodos}) => {
             e.preventDefault()
             if (title === "") return
             const id = nanoid()
-            const newTodo = {title: title, description: description, id: id, key: id}
+            const newTodo = {title: title, description: description, id: id, key: id} // always append to top
 
             saveTodo(newTodo)
 
